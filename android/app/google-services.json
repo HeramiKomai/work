@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "190038211652",
+    "project_id": "komai-food",
+    "storage_bucket": "komai-food.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190038211652:android:f079f15f4a12a6edf65011",
+        "android_client_info": {
+          "package_name": "com.komai.food"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW-Icwz5ber6XMSqTpSgwPtVJ4odBAi04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
