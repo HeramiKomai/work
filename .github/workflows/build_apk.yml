@@ -1,4 +1,4 @@
-asdasdname: Build Flutter APK
+name: Build Flutter APK
 on:
   push:
     branches:
