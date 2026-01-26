@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'video_list_screen.dart'; // ของคนที่ 1 (ณัฐชนน)
-import 'main2.dart'; // ของคนที่ 2 (วริศรา)
-import 'main3.dart'; // ของคนที่ 3 (ทรงศักดิ์)
+import 'video_list_screen.dart'; // ของคนที่ 1
+import 'main2.dart'; // ของคนที่ 2
+import 'main3.dart'; // ของคนที่ 3
 
 void main() => runApp(
-  const MaterialApp(
-    debugShowCheckedModeBanner: false, 
-    home: MainMenu()
-  ),
+  const MaterialApp(debugShowCheckedModeBanner: false, home: MainMenu()),
 );
 
 class MainMenu extends StatelessWidget {
@@ -16,59 +13,50 @@ class MainMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100], // พื้นหลังสีเทาอ่อนให้ปุ่มดูเด่น
       appBar: AppBar(
         title: const Text(
-          'รวม App ของทีม',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          'รวม App',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(25),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(Icons.apps_rounded, size: 80, color: Colors.blueGrey),
-            const SizedBox(height: 10),
             Text(
               'เลือกแอปที่ต้องการเข้าชม',
-              style: TextStyle(fontSize: 18, color: Colors.grey[600], fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 18, color: Colors.grey[700]),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
 
-            // ปุ่มคนที่ 1
             _buildMenuButton(
               context,
               title: 'แอปสูตรอาหาร (ณัฐชนน)',
-              subtitle: 'เมนูกะเพรา & บัวลอย',
-              icon: Icons.restaurant_menu,
               color: Colors.teal,
               screen: const VideoListScreen(),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
 
-            // ปุ่มคนที่ 2
             _buildMenuButton(
               context,
               title: 'วิดีโอทำอาหาร (วริศรา)',
-              subtitle: 'ปลาหมึกผัดไข่เค็ม & ลืมกลืน',
-              icon: Icons.ondemand_video_rounded,
               color: Colors.blueAccent,
               screen: const VideoPage(),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
 
             // ปุ่มคนที่ 3
             _buildMenuButton(
               context,
               title: 'สอนทำอาหาร (ทรงศักดิ์)',
-              subtitle: 'ข้าวผัดไข่ & ลอดช่อง',
-              icon: Icons.fastfood_rounded,
               color: const Color.fromARGB(255, 96, 94, 116),
               screen: const FoodVideoPage(),
             ),
@@ -78,68 +66,43 @@ class MainMenu extends StatelessWidget {
     );
   }
 
-  // ฟังก์ชันสร้างปุ่มเมนูที่ปรับปรุงใหม่
   Widget _buildMenuButton(
     BuildContext context, {
     required String title,
-    required String subtitle,
-    required IconData icon,
     required Color color,
     required Widget screen,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: color.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+    return SizedBox(
+      width: double.infinity,
+      height: 80,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
-          foregroundColor: Colors.black87,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          side: BorderSide(color: color, width: 2),
+          foregroundColor: Colors.black,
+          side: BorderSide(color: color, width: 3),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(15),
           ),
-          elevation: 0,
+          elevation: 2,
         ),
         onPressed: () {
+          // เพิ่มคำสั่งให้กดแล้วข้ามไปหน้านั้นๆ
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => screen),
           );
         },
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CircleAvatar(
-              backgroundColor: color.withOpacity(0.1),
-              child: Icon(icon, color: color),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+            const Icon(Icons.arrow_forward_ios, size: 18),
           ],
         ),
       ),
     );
   }
-}
+} // ปิด Class MainMenu
