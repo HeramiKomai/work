@@ -1,197 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'main1.dart';
+import 'video_list_screen.dart'; // ของคนที่ 1
+import 'main2.dart'; // ของคนที่ 2 (VideoPage)
+import 'main3.dart'; // ของคนที่ 3 (FoodVideoPage)
 
-class CalcPage extends StatefulWidget {
-  const CalcPage({super.key});
-  @override
-  State<CalcPage> createState() => _CalcPageState();
-}
+void main() => runApp(const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MainMenu(),
+    ));
 
-class _CalcPageState extends State<CalcPage> {
-  String _distanceLabel = "กำลังคำนวณระยะทาง...";
-
-  @override
-  void initState() {
-    super.initState();
-    _calculateDistance();
-  }
-
-  Future<void> _calculateDistance() async {
-    try {
-      Position pos = await Geolocator.getCurrentPosition();
-      double minDistance = double.infinity;
-      Store? nearest;
-
-      for (var store in allShops) {
-        double dist = Geolocator.distanceBetween(
-          pos.latitude,
-          pos.longitude,
-          store.location.latitude,
-          store.location.longitude,
-        );
-        if (dist < minDistance) {
-          minDistance = dist;
-          nearest = store;
-        }
-      }
-
-      setState(() {
-        _distanceLabel =
-            "ใกล้สุด: ${nearest?.name} (${(minDistance / 1000).toStringAsFixed(2)} กม.)";
-      });
-    } catch (e) {
-      setState(() {
-        _distanceLabel = "ไม่สามารถระบุระยะทางได้";
-      });
-    }
-  }
+class MainMenu extends StatelessWidget {
+  const MainMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("ตะกร้าสินค้า")),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("food_tab")
-            .orderBy("timestamp", descending: true)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return const Center(child: CircularProgressIndicator());
-          final docs = snapshot.data!.docs;
-          double total = docs.fold(
-            0,
-            (sum, doc) => sum + (doc['price'] as num).toDouble(),
-          );
+      appBar: AppBar(
+        title: const Text('รวม App ของทีม', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(20),
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              'เลือกแอปที่ต้องการเข้าชม',
+              style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 30),
 
-          return Column(
-            children: [
-              Container(
-                height: 200,
-                width: double.infinity,
-                margin: const EdgeInsets.all(10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: Stack(
-                    children: [
-                      FlutterMap(
-                        options: const MapOptions(
-                          initialCenter: LatLng(18.2782, 99.4991),
-                          initialZoom: 14,
-                        ),
-                        children: [
-                          TileLayer(
-                            urlTemplate:
-                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          ),
-                          MarkerLayer(
-                            markers: allShops
-                                .map(
-                                  (store) => Marker(
-                                    point: store.location,
-                                    child: const Icon(
-                                      Icons.location_on,
-                                      color: Colors.red,
-                                      size: 35,
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        bottom: 10,
-                        left: 10,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            _distanceLabel,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    final data = docs[index].data() as Map<String, dynamic>;
-                    return ListTile(
-                      leading: Image.network(
-                        data["image_url"] ?? "",
-                        width: 50,
-                        errorBuilder: (c, e, s) => const Icon(Icons.fastfood),
-                      ),
-                      title: Text(data["food_name"] ?? "ไม่มีชื่อ"),
-                      subtitle: Text("${data["price"]} บาท"),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.red,
-                        ),
-                        onPressed: () => docs[index].reference.delete(),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              _buildSummarySection(total),
-            ],
-          );
-        },
+            // ปุ่มของคนที่ 1 - วิดีโอสูตรอาหาร (ใช้ VideoListScreen)
+            _buildMenuButton(
+              context, 
+              title: 'แอปสูตรอาหาร (คนที่ 1)', 
+              color: Colors.teal, 
+              screen: const VideoListScreen(), 
+            ),
+            
+            const SizedBox(height: 15),
+
+            // ปุ่มของคนที่ 2 - วิดีโอการทำอาหาร (ใช้ VideoPage)
+            _buildMenuButton(
+              context, 
+              title: 'วิดีโอทำอาหาร (คนที่ 2)', 
+              color: Colors.blueAccent, 
+              screen: const VideoPage(), 
+            ),
+
+            const SizedBox(height: 15),
+
+            // ปุ่มของคนที่ 3 - วิดีโอการทำอาหาร (ใช้ FoodVideoPage)
+            _buildMenuButton(
+              context, 
+              title: 'สอนทำอาหาร (คนที่ 3)', 
+              color: const Color.fromARGB(255, 96, 94, 116), 
+              screen: const FoodVideoPage(), 
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildSummarySection(double total) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 10)],
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("ยอดรวมสุทธิ:", style: TextStyle(fontSize: 18)),
-              Text(
-                "${total.toInt()} บาท",
-                style: const TextStyle(
-                  fontSize: 24,
-                  color: Colors.deepOrange,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 15),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-              ),
-              child: const Text("ยืนยันการสั่งซื้อ"),
-            ),
-          ),
-        ],
+  // แก้ไขฟังก์ชันสร้างปุ่มให้สมบูรณ์
+  Widget _buildMenuButton(BuildContext context, {required String title, required Color color, required Widget screen}) {
+    return SizedBox(
+      width: double.infinity,
+      height: 80,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          side: BorderSide(color: color, width: 3),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          elevation: 2,
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => screen),
+          );
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Icon(Icons.arrow_forward_ios, size: 18),
+          ],
+        ),
       ),
     );
   }
