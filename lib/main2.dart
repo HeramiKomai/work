@@ -47,7 +47,6 @@ class VideoPage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            /// รูปคลิป (กดได้)
             GestureDetector(
               onTap: () => openVideo(videoUrl),
               child: ClipRRect(
@@ -95,7 +94,6 @@ class VideoPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            /// 🍲 อาหารคาว
             videoItem(
               title: 'อาหารคาว: ปลาหมึกผัดไข่เค็ม',
               imageUrl: 'https://img.youtube.com/vi/lTKAvsgAVKE/0.jpg',
@@ -104,7 +102,6 @@ class VideoPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            /// 🍰 อาหารหวาน
             videoItem(
               title: 'อาหารหวาน: ลืมกลืน',
               imageUrl: 'https://img.youtube.com/vi/EZ9_NwDfiR4/0.jpg',
